@@ -12,3 +12,7 @@
 # 2025/01/29
 
 -   Unit and Integration tests setup
+
+# 2025/01/30
+
+-   CPU exception setup and triple fault avoidance

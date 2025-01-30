@@ -26,3 +26,17 @@ pub extern "C" fn memcpy(dest: *mut u8, src: *const u8, num: usize) -> *mut u8 {
 
     dest
 }
+
+#[no_mangle]
+pub extern "C" fn memcmp(ptr1: *const u8, ptr2: *const u8, num: usize) -> i32 {
+    unsafe {
+        for i in 0..num {
+            let byte1 = *ptr1.add(i);
+            let byte2 = *ptr2.add(i);
+            if byte1 != byte2 {
+                return (byte1 as i32) - (byte2 as i32);
+            }
+        }
+    }
+    0
+}

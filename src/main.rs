@@ -10,6 +10,15 @@ use marcel_os::println;
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     println!("Hello, World{}", "!");
+    marcel_os::init();
+
+    unsafe {
+        *(0xdeadbeef as *mut u8) = 42;
+    }
+
+    #[cfg(test)]
+    test_main();
+
     loop {}
 }
 
