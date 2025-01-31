@@ -16,3 +16,7 @@
 # 2025/01/30
 
 -   CPU exception setup and triple fault avoidance
+
+# 2025/01/31
+
+- Minor race condition fix on test
