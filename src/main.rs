@@ -9,9 +9,9 @@ use marcel_os::println;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+    marcel_os::init();
     println!("Hello, World!");
     println!("It did not crash");
-    marcel_os::init();
 
     #[cfg(test)]
     test_main();
