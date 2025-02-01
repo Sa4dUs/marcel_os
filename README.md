@@ -19,4 +19,8 @@
 
 # 2025/01/31
 
-- Minor race condition fix on test
+-   Minor race condition fix on test
+
+# 2025/02/01
+
+-   Page fault handler

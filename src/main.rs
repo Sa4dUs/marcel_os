@@ -11,10 +11,11 @@ use marcel_os::println;
 pub extern "C" fn _start() -> ! {
     marcel_os::init();
     println!("Hello, World!");
-    println!("It did not crash");
 
     #[cfg(test)]
     test_main();
+
+    println!("It did not crash");
     marcel_os::hlt_loop();
 }
 
