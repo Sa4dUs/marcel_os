@@ -24,3 +24,8 @@
 # 2025/02/01
 
 -   Page fault handler
+
+# 2025/02/04
+
+-   Multilevel addr translator setup
+-   Basic page frame allocator

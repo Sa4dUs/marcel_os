@@ -4,13 +4,14 @@
 #![test_runner(marcel_os::test_runner)]
 #![feature(custom_test_frameworks)]
 
+use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 use marcel_os::println;
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
-    marcel_os::init();
+entry_point!(kernel_main);
+fn kernel_main(_boot_info: &'static BootInfo) -> ! {
     println!("Hello, World!");
+    marcel_os::init();
 
     #[cfg(test)]
     test_main();
