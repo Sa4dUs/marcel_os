@@ -33,3 +33,4 @@
 # 2025/02/05
 
 -   Heap allocation support
+-   Custom allocators
