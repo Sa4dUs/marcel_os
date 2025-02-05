@@ -5,11 +5,13 @@
 #![test_runner(crate::test_runner)]
 #![feature(abi_x86_interrupt)]
 
+extern crate alloc;
 use core::panic::PanicInfo;
 
 #[cfg(test)]
 use bootloader::{entry_point, BootInfo};
 
+pub mod allocator;
 pub mod gdt;
 pub mod interrupts;
 pub mod memory;

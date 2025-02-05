@@ -29,3 +29,7 @@
 
 -   Multilevel addr translator setup
 -   Basic page frame allocator
+
+# 2025/02/05
+
+-   Heap allocation support
