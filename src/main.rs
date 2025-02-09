@@ -12,6 +12,9 @@ use core::panic::PanicInfo;
 use marcel_os::allocator;
 use marcel_os::memory::{self, BootInfoFrameAllocator};
 use marcel_os::println;
+use marcel_os::task::executor::Executor;
+use marcel_os::task::simple_executor::SimpleExecutor;
+use marcel_os::task::{keyboard, Task};
 use x86_64::VirtAddr;
 
 entry_point!(kernel_main);
@@ -25,11 +28,25 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
+    let mut executor = Executor::new();
+    executor.spawn(Task::new(example_task()));
+    executor.spawn(Task::new(keyboard::print_keypresses()));
+    executor.run();
+
     #[cfg(test)]
     test_main();
 
     println!("It did not crash");
     marcel_os::hlt_loop();
+}
+
+async fn async_number() -> u32 {
+    42
+}
+
+async fn example_task() {
+    let number = async_number().await;
+    println!("async number: {}", number);
 }
 
 #[cfg(not(test))]

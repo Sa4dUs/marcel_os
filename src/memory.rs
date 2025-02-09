@@ -97,3 +97,28 @@ pub extern "C" fn memcmp(ptr1: *const u8, ptr2: *const u8, num: usize) -> i32 {
     }
     0
 }
+
+#[no_mangle]
+pub extern "C" fn memmove(dest: *mut u8, src: *const u8, num: usize) -> *mut u8 {
+    unsafe {
+        if (dest as *const u8) < src {
+            let mut dest_ptr = dest;
+            let mut src_ptr = src;
+            for _ in 0..num {
+                *dest_ptr = *src_ptr;
+                dest_ptr = dest_ptr.add(1);
+                src_ptr = src_ptr.add(1);
+            }
+        } else {
+            let mut dest_ptr = dest.add(num);
+            let mut src_ptr = src.add(num);
+            for _ in 0..num {
+                dest_ptr = dest_ptr.sub(1);
+                src_ptr = src_ptr.sub(1);
+                *dest_ptr = *src_ptr;
+            }
+        }
+    }
+
+    dest
+}

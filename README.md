@@ -34,3 +34,8 @@
 
 -   Heap allocation support
 -   Custom allocators
+
+# 2025/02/09
+
+-   Single core multitasking
+-   Better task based keyboard handler
