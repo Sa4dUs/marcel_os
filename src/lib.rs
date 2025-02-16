@@ -15,6 +15,7 @@ use log::LogType;
 
 pub mod allocator;
 pub mod boot_splash;
+pub mod cli;
 pub mod gdt;
 pub mod interrupts;
 pub mod log;

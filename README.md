@@ -44,3 +44,4 @@
 
 -   Add text cursor to VGA buffer
 -   Boot splash screen
+-   Simple Command line interface

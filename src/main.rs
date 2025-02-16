@@ -12,6 +12,7 @@ use bootloader::{entry_point, BootInfo};
 use core::fmt::write;
 use core::panic::PanicInfo;
 use marcel_os::boot_splash::BootScreen;
+use marcel_os::cli::{cli, init_cli};
 use marcel_os::log::LogType;
 use marcel_os::memory::{self, BootInfoFrameAllocator};
 use marcel_os::println;
@@ -37,11 +38,16 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
+    BootScreen::log(LogType::Info, "Initializing Command Line Interface");
+    init_cli();
+    BootScreen::log(LogType::Success, "Frame Command Line Interface");
+
     BootScreen::log(LogType::Success, "Boot sequence finished successfuly");
 
     BootScreen::show();
 
     let mut executor = Executor::new();
+    executor.spawn(Task::new(cli()));
     executor.run();
 
     #[cfg(test)]
