@@ -43,3 +43,4 @@
 # 2025/02/16
 
 -   Add text cursor to VGA buffer
+-   Boot splash screen

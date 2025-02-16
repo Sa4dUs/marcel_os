@@ -8,14 +8,19 @@
 extern crate alloc;
 use core::panic::PanicInfo;
 
+use boot_splash::BootScreen;
 #[cfg(test)]
 use bootloader::{entry_point, BootInfo};
+use log::LogType;
 
 pub mod allocator;
+pub mod boot_splash;
 pub mod gdt;
 pub mod interrupts;
+pub mod log;
 pub mod memory;
 pub mod serial;
+pub mod settings;
 pub mod task;
 pub mod vga_buffer;
 
@@ -23,9 +28,20 @@ pub fn init() {
     gdt::init();
     interrupts::init_idt();
     unsafe {
+        BootScreen::log(
+            LogType::Info,
+            "Initializing Programmable Interrupt Controllers",
+        );
         interrupts::PICS.lock().initialize();
+        BootScreen::log(
+            LogType::Success,
+            "Programmable Interrupt Controllers initialized successfully",
+        );
     }
+
+    BootScreen::log(LogType::Info, "Enabling interrupts");
     x86_64::instructions::interrupts::enable();
+    BootScreen::log(LogType::Success, "Interrupts enabled");
 }
 
 pub trait Testable {

@@ -132,17 +132,24 @@ impl Writer {
         }
     }
 
-    fn update_cursor(&mut self) {
+    pub fn move_cursor_back(&mut self) {
+        if self.cursor_position.1 > 0 {
+            self.cursor_position.1 -= 1;
+            self.update_cursor();
+        }
+    }
+
+    pub fn update_cursor(&mut self) {
         let (row, col) = self.cursor_position;
         let pos = row * BUFFER_WIDTH + col;
 
         unsafe {
-            let mut port_cmd = x86_64::instructions::port::Port::new(0x3D4);
-            let mut port_data = x86_64::instructions::port::Port::new(0x3D5);
+            use x86_64::instructions::port::Port;
+            let mut port_cmd = Port::new(0x3D4);
+            let mut port_data = Port::new(0x3D5);
 
             port_cmd.write(0x0F as u8);
             port_data.write((pos & 0xFF) as u8);
-
             port_cmd.write(0x0E as u8);
             port_data.write(((pos >> 8) & 0xFF) as u8);
         }

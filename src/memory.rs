@@ -2,9 +2,17 @@ use bootloader::bootinfo::{MemoryMap, MemoryRegionType};
 use x86_64::structures::paging::{FrameAllocator, OffsetPageTable, PageTable, PhysFrame, Size4KiB};
 use x86_64::{registers::control::Cr3, PhysAddr, VirtAddr};
 
+use crate::boot_splash::BootScreen;
+use crate::log::LogType;
+
 pub unsafe fn init(physical_memory_offset: VirtAddr) -> OffsetPageTable<'static> {
+    BootScreen::log(LogType::Info, "Initializing page table");
     let level_4_table = active_level_4_table(physical_memory_offset);
-    OffsetPageTable::new(level_4_table, physical_memory_offset)
+    BootScreen::log(LogType::Success, "Level 4 page table loaded successfully");
+    let offset_page_table = OffsetPageTable::new(level_4_table, physical_memory_offset);
+    BootScreen::log(LogType::Success, "Page table initialized successfully");
+
+    offset_page_table
 }
 
 unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable {

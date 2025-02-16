@@ -6,37 +6,47 @@
 
 extern crate alloc;
 
+use alloc::format;
 use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
 use bootloader::{entry_point, BootInfo};
+use core::fmt::write;
 use core::panic::PanicInfo;
-use marcel_os::allocator;
+use marcel_os::boot_splash::BootScreen;
+use marcel_os::log::LogType;
 use marcel_os::memory::{self, BootInfoFrameAllocator};
 use marcel_os::println;
 use marcel_os::task::executor::Executor;
+use marcel_os::task::keyboard::print_keypresses;
 use marcel_os::task::simple_executor::SimpleExecutor;
 use marcel_os::task::{keyboard, Task};
+use marcel_os::{allocator, boot_splash};
 use x86_64::VirtAddr;
 
 entry_point!(kernel_main);
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
-    println!("Hello, World!");
+    BootScreen::log(LogType::Info, "Initializing boot sequence");
     marcel_os::init();
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    BootScreen::log(LogType::Info, "Initializing memory mapper");
     let mut mapper = unsafe { memory::init(phys_mem_offset) };
+    BootScreen::log(LogType::Success, "Memory mapper initialized successfully");
+    BootScreen::log(LogType::Info, "Initializing frame allocator");
     let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
+    BootScreen::log(LogType::Success, "Frame allocator initialized successfully");
 
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
+    BootScreen::log(LogType::Success, "Boot sequence finished successfuly");
+
+    BootScreen::show();
+
     let mut executor = Executor::new();
-    executor.spawn(Task::new(example_task()));
-    executor.spawn(Task::new(keyboard::print_keypresses()));
     executor.run();
 
     #[cfg(test)]
     test_main();
 
-    println!("It did not crash");
     marcel_os::hlt_loop();
 }
 

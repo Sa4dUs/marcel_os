@@ -1,5 +1,7 @@
+use crate::boot_splash::BootScreen;
 use crate::gdt::DOUBLE_FAULT_IST_INDEX;
 use crate::hlt_loop;
+use crate::log::LogType;
 use crate::{print, println};
 use lazy_static::lazy_static;
 use pic8259::ChainedPics;
@@ -48,7 +50,12 @@ lazy_static! {
 }
 
 pub fn init_idt() {
+    BootScreen::log(LogType::Info, "Initializing Interrupt Descriptor Table");
     IDT.load();
+    BootScreen::log(
+        LogType::Success,
+        "Interrupt Descriptor Table loaded successfully",
+    );
 }
 
 extern "x86-interrupt" fn breakpoint_handler(stack_frame: InterruptStackFrame) {
@@ -63,7 +70,6 @@ extern "x86-interrupt" fn double_fault_handler(
 }
 
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    print!(".");
     unsafe {
         PICS.lock()
             .notify_end_of_interrupt(InterruptIndex::Timer.as_u8());

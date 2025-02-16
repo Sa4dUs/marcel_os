@@ -3,6 +3,9 @@ use x86_64::structures::gdt::{Descriptor, GlobalDescriptorTable, SegmentSelector
 use x86_64::structures::tss::TaskStateSegment;
 use x86_64::VirtAddr;
 
+use crate::boot_splash::BootScreen;
+use crate::log::LogType;
+
 pub const DOUBLE_FAULT_IST_INDEX: u16 = 0;
 
 lazy_static! {
@@ -44,9 +47,18 @@ pub fn init() {
     use x86_64::instructions::segmentation::{Segment, CS};
     use x86_64::instructions::tables::load_tss;
 
+    BootScreen::log(LogType::Info, "Initializing Global Descriptor Table");
     GDT.0.load();
+    BootScreen::log(
+        LogType::Success,
+        "Global Descriptor Table loaded successfully",
+    );
+
     unsafe {
+        BootScreen::log(LogType::Info, "Setting code segment register");
         CS::set_reg(GDT.1.code_selector);
+        BootScreen::log(LogType::Info, "Initializing Task State Segment");
         load_tss(GDT.1.tss_selector);
+        BootScreen::log(LogType::Success, "Task State Segment loaded successfully");
     }
 }
