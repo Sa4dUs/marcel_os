@@ -39,3 +39,7 @@
 
 -   Single core multitasking
 -   Better task based keyboard handler
+
+# 2025/02/16
+
+-   Add text cursor to VGA buffer
