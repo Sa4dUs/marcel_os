@@ -2,7 +2,7 @@ use crate::boot_splash::BootScreen;
 use crate::gdt::DOUBLE_FAULT_IST_INDEX;
 use crate::hlt_loop;
 use crate::log::LogType;
-use crate::{print, println};
+use crate::println;
 use lazy_static::lazy_static;
 use pic8259::ChainedPics;
 use spin;

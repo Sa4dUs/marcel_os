@@ -1,8 +1,4 @@
-use crate::{
-    log::LogType,
-    println,
-    vga_buffer::{BUFFER_WIDTH, WRITER},
-};
+use crate::{log::LogType, println, vga_buffer::WRITER};
 
 pub struct BootScreen;
 impl BootScreen {
@@ -13,6 +9,7 @@ impl BootScreen {
         }
 
         println!("\n{}", crate::settings::ASCII_LOGO);
+        println!("Version 0.1.0 - alpha\n");
         println!("Developed by @sa4dus\n");
         println!();
     }

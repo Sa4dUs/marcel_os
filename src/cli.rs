@@ -16,7 +16,6 @@ pub fn init_cli() {
 
 pub async fn cli() {
     use crate::print;
-    use crate::println;
     use crate::task::keyboard::ScancodeStream;
     use futures_util::stream::StreamExt;
     use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
@@ -46,12 +45,11 @@ pub async fn cli() {
                             '\x08' | '\x7F' => {
                                 if !buffer.is_empty() {
                                     buffer.pop();
-                                    unsafe {
-                                        let mut writer = WRITER.lock();
-                                        writer.move_cursor_back();
-                                        writer.write_byte(b' ');
-                                        writer.move_cursor_back();
-                                    }
+
+                                    let mut writer = WRITER.lock();
+                                    writer.move_cursor_back();
+                                    writer.write_byte(b' ');
+                                    writer.move_cursor_back();
                                 }
                             }
                             _ => {

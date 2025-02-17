@@ -6,25 +6,21 @@
 
 extern crate alloc;
 
-use alloc::format;
-use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
 use bootloader::{entry_point, BootInfo};
-use core::fmt::write;
 use core::panic::PanicInfo;
+use marcel_os::allocator;
 use marcel_os::boot_splash::BootScreen;
 use marcel_os::cli::{cli, init_cli};
 use marcel_os::log::LogType;
 use marcel_os::memory::{self, BootInfoFrameAllocator};
 use marcel_os::println;
 use marcel_os::task::executor::Executor;
-use marcel_os::task::keyboard::print_keypresses;
-use marcel_os::task::simple_executor::SimpleExecutor;
-use marcel_os::task::{keyboard, Task};
-use marcel_os::{allocator, boot_splash};
+use marcel_os::task::Task;
 use x86_64::VirtAddr;
 
-entry_point!(kernel_main);
-fn kernel_main(boot_info: &'static BootInfo) -> ! {
+entry_point!(kmain);
+
+fn kmain(boot_info: &'static BootInfo) -> ! {
     BootScreen::log(LogType::Info, "Initializing boot sequence");
     marcel_os::init();
 
@@ -46,23 +42,14 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     BootScreen::show();
 
+    #[cfg(test)]
+    test_main();
+
     let mut executor = Executor::new();
     executor.spawn(Task::new(cli()));
     executor.run();
 
-    #[cfg(test)]
-    test_main();
-
     marcel_os::hlt_loop();
-}
-
-async fn async_number() -> u32 {
-    42
-}
-
-async fn example_task() {
-    let number = async_number().await;
-    println!("async number: {}", number);
 }
 
 #[cfg(not(test))]
