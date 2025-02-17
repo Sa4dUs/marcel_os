@@ -1,12 +1,7 @@
 # **marcel_os**
 
-<!--
-![Build Status](https://img.shields.io/github/workflow/status/sa4dus/marcel_os/CI)
-![Test Coverage](https://img.shields.io/codecov/c/github/sa4dus/marcel_os)
+![Version](https://img.shields.io/badge/version-0.1.0--alpha-blue)
 ![License](https://img.shields.io/github/license/sa4dus/marcel_os)
-![Version](https://img.shields.io/github/v/release/sa4dus/marcel_os)
--->
-
 ![Programming Language](https://img.shields.io/badge/language-Rust-orange)
 
 **marcel_os** is an operating system project developed in Rust. This repository contains the source code and resources necessary to build and run.
