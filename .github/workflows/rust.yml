@@ -1,0 +1,42 @@
+name: Rust
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/*'
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Rust toolchain
+      uses: actions/setup-rust@v1
+      with:
+        rust-version: nightly-2024-12-31
+
+    - name: Add required rustup components
+      run: |
+        rustup component add rust-src
+        rustup component add llvm-tools-preview
+
+    - name: Install dependencies
+      run: cargo build --release
+
+    - name: Run tests
+      run: cargo test --release
+
+    - name: Check formatting
+      run: cargo fmt -- --check
+
+    - name: Clippy lint checks
+      run: cargo clippy -- -D warnings
