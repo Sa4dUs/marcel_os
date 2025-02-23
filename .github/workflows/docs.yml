@@ -18,6 +18,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+      - name: Configure Rust for bare metal
+        run: |
+          rustup toolchain install nightly-2024-12-31
+          rustup override set nightly-2024-12-31
+          rustup component add rust-src
+          rustup component add llvm-tools-preview
       - name: Configure cache
         uses: Swatinem/rust-cache@v2
       - name: Setup pages
@@ -28,13 +34,13 @@ jobs:
       - name: Build docs
         run: cargo doc --no-deps
       - name: Move docs to root
-        run: cp -r target/doc/marcel_os target/doc/docs
+        run: cp -r target/x86_64-marcel_os/doc/marcel_os target/x86_64-marcel_os/doc/docs
       - name: Remove lock file
         run: rm target/doc/.lock
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: target/doc/
+          path: target/x86_64-marcel_os/doc/
   deploy:
     name: Deploy
     environment:
