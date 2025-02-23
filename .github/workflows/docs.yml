@@ -36,7 +36,7 @@ jobs:
       - name: Move docs to root
         run: cp -r target/x86_64-marcel_os/doc/marcel_os target/x86_64-marcel_os/doc/docs
       - name: Remove lock file
-        run: rm target/x86_64-marcel_os//.lock
+        run: rm target/x86_64-marcel_os/doc/.lock
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
