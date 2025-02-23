@@ -28,7 +28,9 @@ jobs:
       - name: Build docs
         run: cargo doc --no-deps
       - name: Move docs to root
-        run: mv target/doc/* target/doc/.git* ./
+        run: |
+          mv target/doc/marcel_os/index.html ./
+          mv target/doc/marcel_os/*.{css,js,png} ./
       - name: Remove lock file
         run: rm target/doc/.lock
       - name: Upload artifact
