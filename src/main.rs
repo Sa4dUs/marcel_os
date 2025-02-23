@@ -13,13 +13,16 @@ use marcel_os::boot_splash::BootScreen;
 use marcel_os::cli::{cli, init_cli};
 use marcel_os::log::LogType;
 use marcel_os::memory::{self, BootInfoFrameAllocator};
-use marcel_os::println;
 use marcel_os::task::executor::Executor;
 use marcel_os::task::Task;
 use x86_64::VirtAddr;
 
 entry_point!(kmain);
 
+/// Kernel main function, responsible for initializing the system and entering the main loop.
+///
+/// # Arguments
+/// * `boot_info` - A reference to bootloader-provided system information.
 fn kmain(boot_info: &'static BootInfo) -> ! {
     BootScreen::log(LogType::Info, "Initializing boot sequence");
     marcel_os::init();
@@ -28,6 +31,7 @@ fn kmain(boot_info: &'static BootInfo) -> ! {
     BootScreen::log(LogType::Info, "Initializing memory mapper");
     let mut mapper = unsafe { memory::init(phys_mem_offset) };
     BootScreen::log(LogType::Success, "Memory mapper initialized successfully");
+
     BootScreen::log(LogType::Info, "Initializing frame allocator");
     let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
     BootScreen::log(LogType::Success, "Frame allocator initialized successfully");
@@ -36,10 +40,9 @@ fn kmain(boot_info: &'static BootInfo) -> ! {
 
     BootScreen::log(LogType::Info, "Initializing Command Line Interface");
     init_cli();
-    BootScreen::log(LogType::Success, "Frame Command Line Interface");
+    BootScreen::log(LogType::Success, "Command Line Interface initialized");
 
-    BootScreen::log(LogType::Success, "Boot sequence finished successfuly");
-
+    BootScreen::log(LogType::Success, "Boot sequence finished successfully");
     BootScreen::show();
 
     #[cfg(test)]
@@ -49,22 +52,35 @@ fn kmain(boot_info: &'static BootInfo) -> ! {
     executor.spawn(Task::new(cli()));
     executor.run();
 
+    #[allow(unreachable_code)]
     marcel_os::hlt_loop();
 }
 
+/// Panic handler for non-test environments.
+///
+/// # Arguments
+/// * `info` - Panic information.
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
+    use marcel_os::println;
+
     println!("{}", info);
     marcel_os::hlt_loop();
 }
 
+/// Panic handler for test environments.
+///
+/// # Arguments
+/// * `info` - Panic information.
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     marcel_os::test_panic_handler(info)
 }
 
+/// A trivial test case to verify basic functionality.
+#[allow(clippy::eq_op)]
 #[test_case]
 fn trivial_assertion() {
     assert_eq!(1, 1);
